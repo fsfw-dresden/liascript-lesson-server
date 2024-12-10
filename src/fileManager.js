@@ -12,7 +12,7 @@ export async function writeBlobs(baseDir, documentId, blobs) {
   await fs.mkdir(blobDir, { recursive: true });
 
   const writePromises = Object.entries(blobs).map(([key, content]) =>
-    fs.writeFile(join(blobDir, key), content)
+    fs.writeFile(join(blobDir, key), Buffer.from(content, 'base64'))
   );
 
   await Promise.all(writePromises);
