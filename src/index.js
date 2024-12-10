@@ -46,6 +46,9 @@ app.use(cors());
 app.use(express.json({ limit: '500mb' }));
 app.use(express.urlencoded({ limit: '500mb', extended: true }));
 
+// Serve files from storage directory
+app.use('/static', express.static(join(__dirname, '../storage')));
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const STORAGE_DIR = join(__dirname, '../storage');
