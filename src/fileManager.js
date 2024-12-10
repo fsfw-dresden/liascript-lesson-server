@@ -8,8 +8,7 @@ export async function writeFileContent(baseDir, documentId, fileName, content) {
 }
 
 export async function writeBlobs(baseDir, documentId, blobs) {
-  const blobDir = join(baseDir, documentId, 'blobs');
-  await fs.mkdir(blobDir, { recursive: true });
+  const blobDir = join(baseDir, documentId);
 
   const writePromises = Object.entries(blobs).map(([key, content]) =>
     fs.writeFile(join(blobDir, key), Buffer.from(content, 'base64'))
