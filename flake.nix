@@ -11,9 +11,8 @@
       {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
-	     cargo
-	     rustc
-	     rust-analyzer
+            nodejs
+            yarn
           ];
           LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
         };
