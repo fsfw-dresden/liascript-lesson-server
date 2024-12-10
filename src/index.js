@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { join } from 'path';
 import winston from 'winston';
 import asyncHandler from 'express-async-handler';
 import { clearAllLocks, acquireLock, releaseLock } from './lockManager.js';
@@ -46,12 +45,10 @@ app.use(cors());
 app.use(express.json({ limit: '500mb' }));
 app.use(express.urlencoded({ limit: '500mb', extended: true }));
 
-// Serve files from storage directory
-app.use('/static', express.static(join(__dirname, '../storage')));
+const STORAGE_DIR = process.env.STORAGE_DIR || './storage';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const STORAGE_DIR = process.env.STORAGE_DIR || join(__dirname, '../storage');
+// Serve files from storage directory
+app.use('/static', express.static(STORAGE_DIR));
 
 logger.info(`Using storage directory: ${STORAGE_DIR}`);
 
@@ -59,30 +56,43 @@ logger.info(`Using storage directory: ${STORAGE_DIR}`);
 clearAllLocks();
 
 app.post('/sync', asyncHandler(async (req, res) => {
-  const { documentId, fileName, fileContent, blobs } = req.body;
+  const { documentId, fileContent, blobs } = req.body;
 
-  logger.info(`Received sync request for document ${documentId}`, {
+  // Extract path from documentId which should be in format "/static/path/to/file.md"
+  const pathMatch = documentId.match(/^\/static\/(.+)$/);
+  if (!pathMatch) {
+    return res.status(400).json({
+      error: 'Invalid document ID format. Must start with /static/'
+    });
+  }
+
+  const relativePath = pathMatch[1];
+  const fileName = relativePath.split('/').pop();
+  const dirPath = relativePath.substring(0, relativePath.length - fileName.length - 1);
+
+  logger.info(`Received sync request for document at path ${relativePath}`, {
+    dirPath,
     fileName,
     blobCount: Object.keys(blobs || {}).length
   });
 
   try {
     // Try to acquire lock
-    if (!acquireLock(documentId)) {
-      logger.warn(`Document ${documentId} is locked, rejecting request`);
+    if (!acquireLock(relativePath)) {
+      logger.warn(`Document ${relativePath} is locked, rejecting request`);
       return res.status(423).json({ 
         error: 'Document is locked, please try again later' 
       });
     }
 
     // Write main file content
-    await writeFileContent(STORAGE_DIR, documentId, fileName, fileContent);
-    logger.info(`Written main file for document ${documentId}`);
+    await writeFileContent(STORAGE_DIR, dirPath, fileName, fileContent);
+    logger.info(`Written main file at ${relativePath}`);
 
     // Write blobs
     if (blobs) {
-      await writeBlobs(STORAGE_DIR, documentId, blobs);
-      logger.info(`Written ${Object.keys(blobs).length} blobs for document ${documentId}`);
+      await writeBlobs(STORAGE_DIR, dirPath, blobs);
+      logger.info(`Written ${Object.keys(blobs).length} blobs for ${relativePath}`);
     }
 
     res.json({ success: true });
