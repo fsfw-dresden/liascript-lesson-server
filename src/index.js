@@ -77,7 +77,7 @@ app.post('/sync', asyncHandler(async (req, res) => {
   });
 
   try {
-    // Try to acquire lock
+    // Try to acquire lock using relativePath
     if (!acquireLock(relativePath)) {
       logger.warn(`Document ${relativePath} is locked, rejecting request`);
       return res.status(423).json({ 
@@ -104,8 +104,8 @@ app.post('/sync', asyncHandler(async (req, res) => {
     });
     throw error;
   } finally {
-    releaseLock(documentId);
-    logger.info(`Released lock for document ${documentId}`);
+    releaseLock(relativePath);
+    logger.info(`Released lock for document ${relativePath}`);
   }
 }));
 
