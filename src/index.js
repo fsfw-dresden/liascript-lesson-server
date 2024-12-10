@@ -59,10 +59,10 @@ app.post('/sync', asyncHandler(async (req, res) => {
   const { documentId, fileContent, blobs } = req.body;
 
   // Extract path from documentId which should be in format "/static/path/to/file.md"
-  const pathMatch = documentId.match(/^\/static\/(.+)$/);
+  const pathMatch = documentId.match(/.*\/static\/(.+)$/);
   if (!pathMatch) {
     return res.status(400).json({
-      error: 'Invalid document ID format. Must start with /static/'
+      error: 'Invalid document ID format. Must start with .*/static/'
     });
   }
 
