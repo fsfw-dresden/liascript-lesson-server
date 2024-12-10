@@ -51,7 +51,9 @@ app.use('/static', express.static(join(__dirname, '../storage')));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const STORAGE_DIR = join(__dirname, '../storage');
+const STORAGE_DIR = process.env.STORAGE_DIR || join(__dirname, '../storage');
+
+logger.info(`Using storage directory: ${STORAGE_DIR}`);
 
 // Clear all locks on server start
 clearAllLocks();
