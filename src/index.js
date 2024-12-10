@@ -71,7 +71,7 @@ app.post('/sync', asyncHandler(async (req, res) => {
   }
 }));
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
   logger.info(`Server started on port ${PORT}`);
 });
