@@ -40,6 +40,12 @@ const logger = winston.createLogger({
   ]
 });
 
+const PROTOCOL = process.env.PROTOCOL || "http";
+const HOST = process.env.HOST || "localhost";
+const PORT = process.env.PORT || 9000;
+
+const BASE_URL = `${PROTOCOL}://${HOST}:${PORT}`;
+
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '500mb' }));
@@ -85,17 +91,22 @@ app.post('/sync', asyncHandler(async (req, res) => {
       });
     }
 
-    // Write main file content
-    await writeFileContent(STORAGE_DIR, dirPath, fileName, fileContent);
-    logger.info(`Written main file at ${relativePath}`);
+   let modifiedFileContent = fileContent;
+
 
     // Write blobs
     if (blobs) {
       await writeBlobs(STORAGE_DIR, dirPath, blobs);
       logger.info(`Written ${Object.keys(blobs).length} blobs for ${relativePath}`);
+      for (const blob of Object.keys(blobs)) {
+        modifiedFileContent = modifiedFileContent.replace(`(${blob})`, `(${BASE_URL}/static/${dirPath}/${blob})`); 
+      }
     }
+    // Write main file content
+    await writeFileContent(STORAGE_DIR, dirPath, fileName, modifiedFileContent);
+    logger.info(`Written main file at ${relativePath}`);
 
-    res.json({ success: true });
+    res.json({ success: true, fileContent: modifiedFileContent });
   } catch (error) {
     logger.error('Error processing sync request', {
       documentId,
@@ -109,7 +120,6 @@ app.post('/sync', asyncHandler(async (req, res) => {
   }
 }));
 
-const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => {
   logger.info(`Server started on port ${PORT}`);
 });
