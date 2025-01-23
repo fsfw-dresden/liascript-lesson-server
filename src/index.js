@@ -17,14 +17,17 @@ app.use(express.json({ limit: '500mb' }));
 app.use(express.urlencoded({ limit: '500mb', extended: true }));
 
 const STORAGE_DIR = process.env.STORAGE_DIR || './storage';
+const LIASCRIPT_EDITOR_DIST = process.env.LIASCRIPT_EDITOR_DIST || './liascript-editor';
 
 // Serve files from storage directory
 app.use('/static', express.static(STORAGE_DIR));
+
 
 logger.info(`Using storage directory: ${STORAGE_DIR}`);
 
 // Clear all locks on server start
 clearAllLocks();
+
 
 app.post('/sync', asyncHandler(async (req, res) => {
   const { documentId, fileContent, blobs } = req.body;
@@ -76,6 +79,26 @@ app.post('/sync', asyncHandler(async (req, res) => {
     logger.info(`Released lock for document ${relativePath}`);
   }
 }));
+
+app.use(/^(?!\/sync|\/static).*/, (req, res, next) => {
+  // Remove any duplicate paths and trailing slashes
+  const requestPath = req.originalUrl
+    .replace(/\/+/g, '/') // Replace multiple consecutive slashes with a single one
+    .replace(/\/$/, '');  // Remove trailing slash
+    
+  // Create a new request object with the corrected path
+  req.url = requestPath;
+  
+  express.static(LIASCRIPT_EDITOR_DIST, {
+    index: 'index.html',
+    fallthrough: true,
+    setHeaders: (res, path, stat) => {
+      const mimeType = express.static.mime.lookup(path);
+      logger.info(`Serving ${path} with MIME type: ${mimeType}`);
+      res.set('Content-Type', mimeType);
+    }
+  })(req, res, next);
+});
 
 app.listen(PORT, () => {
   logger.info(`Server started on port ${PORT}`);
