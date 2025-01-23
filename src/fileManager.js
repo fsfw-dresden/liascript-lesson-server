@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
+import { logger } from './logger.js';
 
 export async function writeFileContent(baseDir, dirPath, fileName, content) {
   const fullDir = join(baseDir, dirPath);
@@ -11,6 +12,7 @@ export async function writeBlobs(baseDir, dirPath, blobs) {
   const blobDir = join(baseDir, dirPath);
 
   const writePromises = Object.entries(blobs).map(([key, blob]) => {
+    logger.info(`Writing blob ${key}`);
     if (typeof blob === 'string') {
       return fs.writeFile(join(blobDir, key), Buffer.from(blob, 'base64'));
     } else if (blob && typeof blob.content === 'string') {

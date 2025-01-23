@@ -1,44 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import { join } from 'path';
-import winston from 'winston';
 import asyncHandler from 'express-async-handler';
 import { clearAllLocks, acquireLock, releaseLock } from './lockManager.js';
 import { writeFileContent, writeBlobs } from './fileManager.js';
-
-// Setup logger
-const logger = winston.createLogger({
-  level: 'debug',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.colorize(),
-    winston.format.printf(({ level, message, timestamp, ...metadata }) => {
-      let msg = `${timestamp} ${level}: ${message}`;
-      if (Object.keys(metadata).length > 0) {
-        msg += '\n' + JSON.stringify(metadata, null, 2);
-      }
-      return msg;
-    })
-  ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({ 
-      filename: 'error.log', 
-      level: 'error',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      )
-    }),
-    new winston.transports.File({ 
-      filename: 'combined.log',
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
-      )
-    })
-  ]
-});
+import { logger } from './logger.js';
 
 const PROTOCOL = process.env.PROTOCOL || "http";
 const HOST = process.env.HOST || "localhost";
@@ -64,15 +29,7 @@ clearAllLocks();
 app.post('/sync', asyncHandler(async (req, res) => {
   const { documentId, fileContent, blobs } = req.body;
 
-  // Extract path from documentId which should be in format "/static/path/to/file.md"
-  const pathMatch = documentId.match(/.*\/static\/(.+)$/);
-  if (!pathMatch) {
-    return res.status(400).json({
-      error: 'Invalid document ID format. Must start with .*/static/'
-    });
-  }
-
-  const relativePath = pathMatch[1];
+  const relativePath = documentId;
   const fileName = relativePath.split('/').pop();
   const dirPath = relativePath.substring(0, relativePath.length - fileName.length - 1);
 
@@ -98,9 +55,9 @@ app.post('/sync', asyncHandler(async (req, res) => {
     if (blobs) {
       await writeBlobs(STORAGE_DIR, dirPath, blobs);
       logger.info(`Written ${Object.keys(blobs).length} blobs for ${relativePath}`);
-      for (const blob of Object.keys(blobs)) {
+      /*for (const blob of Object.keys(blobs)) {
         modifiedFileContent = modifiedFileContent.replace(`(${blob})`, `(${BASE_URL}/static/${dirPath}/${blob})`); 
-      }
+      }*/
     }
     // Write main file content
     await writeFileContent(STORAGE_DIR, dirPath, fileName, modifiedFileContent);
