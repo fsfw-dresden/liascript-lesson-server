@@ -1,7 +1,9 @@
 #!/bin/bash
 
+COURSE_BASE_PATH="$HOME/.local/share/learning-portal/courses"
+
 # Ensure the required directories exist
-mkdir -p "$HOME/.local/share/courses"
+mkdir -p "$COURSE_BASE_PATH"
 mkdir -p "$HOME/.local/share/liascript-editor"
 
 # Check if a path argument was provided
@@ -12,11 +14,11 @@ fi
 
 # Process the path
 COURSE_PATH="$1"
-if [[ "$COURSE_PATH" == "$HOME/.local/share/courses/"* ]]; then
+if [[ "$COURSE_PATH" == "$COURSE_BASE_PATH/"* ]]; then
     # Remove the prefix if it's an absolute path
-    COURSE_PATH="${COURSE_PATH#$HOME/.local/share/courses/}"
+    COURSE_PATH="${COURSE_PATH#$COURSE_BASE_PATH/}"
 elif [[ "$COURSE_PATH" == /* ]]; then
-    echo "Error: Absolute paths must be under $HOME/.local/share/courses"
+    echo "Error: Absolute paths must be under $COURSE_BASE_PATH"
     exit 1
 fi
 
