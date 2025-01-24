@@ -11,7 +11,7 @@ fi
 
 echo "Installing build dependencies..."
 sudo apt-get update
-sudo apt-get install -y debhelper nodejs
+sudo apt-get install -y debhelper nodejs npm
 
 echo "Building Debian package..."
 dpkg-buildpackage -us -uc -b

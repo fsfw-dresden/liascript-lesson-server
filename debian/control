@@ -2,7 +2,7 @@ Source: liascript-editor
 Section: editors
 Priority: optional
 Maintainer: LiaScript Team <team@schulstick.org>
-Build-Depends: debhelper-compat (= 13), nodejs (>= 14.0.0)
+Build-Depends: debhelper-compat (= 13), nodejs (>= 14.0.0), npm
 
 Package: liascript-editor
 Architecture: all
