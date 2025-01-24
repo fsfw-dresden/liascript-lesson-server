@@ -1,0 +1,13 @@
+Source: liascript-editor
+Section: editors
+Priority: optional
+Maintainer: LiaScript Team <maintainer@example.com>
+Build-Depends: debhelper-compat (= 13), nodejs (>= 14.0.0)
+
+Package: liascript-editor
+Architecture: all
+Depends: nodejs (>= 14.0.0), chromium | chromium-browser
+Description: LiaScript Course Editor
+ An editor for creating and editing LiaScript courses with
+ live preview functionality. Includes a document server and
+ desktop integration.

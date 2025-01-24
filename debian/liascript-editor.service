@@ -1,0 +1,12 @@
+[Unit]
+Description=LiaScript Editor Document Server
+After=network.target
+
+[Service]
+Environment=STORAGE_DIR=%h/.local/share/courses
+ExecStart=/usr/bin/node /usr/lib/liascript-editor/src/index.js
+Type=simple
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=LiaScript Editor
+Comment=Edit LiaScript courses
+Exec=liascript-editor-wrapper.sh %f
+Icon=text-editor
+Terminal=false
+Type=Application
+Categories=Development;Education;
+MimeType=text/markdown;
