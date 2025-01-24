@@ -1,5 +1,6 @@
 liascript-editor/* usr/lib/liascript-editor/dist/
 src/* usr/lib/liascript-editor/src/
+package.json usr/lib/liascript-editor/
 debian/liascript-editor-wrapper.sh usr/bin/
 debian/LiaScript-Editor.desktop usr/share/applications/
 debian/liascript-editor.service usr/lib/systemd/user/
