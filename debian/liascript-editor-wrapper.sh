@@ -25,11 +25,8 @@ fi
 # Ensure the systemd user service is started
 systemctl --user start liascript-editor.service
 
-# Wait for the service to be fully started
-sleep 2
-
 # Launch Chromium in app mode with custom profile
 chromium \
-    --app="https://localhost:9000/?/tutor/${COURSE_PATH}" \
+    --app="http://localhost:9000/?/tutor/${COURSE_PATH}" \
     --user-data-dir="$HOME/.local/share/liascript-editor" \
     --no-first-run
