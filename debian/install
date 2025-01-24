@@ -1,4 +1,4 @@
-dist usr/lib/liascript-editor/dist/
+liascript-editor/* usr/lib/liascript-editor/dist/
 src/* usr/lib/liascript-editor/src/
 debian/liascript-editor-wrapper.sh usr/bin/
 debian/LiaScript-Editor.desktop usr/share/applications/
