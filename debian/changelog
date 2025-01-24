@@ -1,0 +1,9 @@
+liascript-editor (1.0.0) unstable; urgency=medium
+
+  * Initial release
+  * Includes document server and desktop integration
+  * Systemd user service for document server
+  * Chrome app mode integration
+  * Course path handling relative to ~/.local/share/learning-portal/courses
+
+ -- LiaScript Team <team@schulstick.org>  Thu, 24 Jan 2025 12:00:00 +0000
