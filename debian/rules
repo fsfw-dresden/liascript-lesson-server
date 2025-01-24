@@ -4,8 +4,5 @@
 
 override_dh_auto_build:
 	# Install npm dependencies
-	cd usr/lib/liascript-editor && npm install --production
+	yarn install --production=true
 
-override_dh_auto_clean:
-	# Clean up node_modules
-	rm -rf usr/lib/liascript-editor/node_modules
