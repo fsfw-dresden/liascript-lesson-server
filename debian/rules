@@ -3,8 +3,6 @@
 	dh $@
 
 override_dh_auto_build:
-	# Install yarn globally
-	npm install -g yarn
-	# Install npm dependencies
-	yarn install --production=true
+	# Install dependencies using npx yarn
+	npx yarn install --production=true
 
