@@ -4,5 +4,5 @@ node_modules/* usr/lib/liascript-editor/node_modules/
 package.json usr/lib/liascript-editor/
 debian/liascript-editor-wrapper.sh usr/bin/
 debian/LiaScript-Editor.desktop usr/share/applications/
-debian/liascript-editor.service usr/lib/systemd/user/
+debian/liascript-editor.user.service usr/lib/systemd/user/
 LiaScript-Editor.png usr/share/icons/

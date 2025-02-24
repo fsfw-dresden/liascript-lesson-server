@@ -3,9 +3,7 @@ Description=LiaScript Editor Document Server
 After=network.target
 
 [Service]
-User=%u
-Group=%u
-Environment=STORAGE_DIR=%h/.local/share/courses
+Environment=STORAGE_DIR=%h/.local/share/learning-portal/courses
 Environment=LIASCRIPT_EDITOR_DIST=/usr/lib/liascript-editor/dist
 WorkingDirectory=/usr/lib/liascript-editor
 ExecStart=/usr/bin/node /usr/lib/liascript-editor/src/index.js
