@@ -4,15 +4,8 @@
 
 override_dh_auto_build:
 	curl -s 'https://api.github.com/repos/fsfw-dresden/LiaScript-LiveEditor/releases/latest' | jq -r '.assets[0].browser_download_url' | xargs curl -L -o liveeditor.tar.bz2
-	ls -l
 	mkdir -p liascript-editor
-	pwd
-	cd liascript-editor
-	pwd
-	ls -l .. .
-	tar -xjvf ../liveeditor.tar.bz2
-	cd ..
-	rm liveeditor.tar.bz2
+	tar -xjvf liveeditor.tar.bz2 -C liascript-editor
 	# Install dependencies using npx yarn
 	npx yarn install --production=true
 
