@@ -6,6 +6,7 @@ override_dh_auto_build:
 	curl -s 'https://api.github.com/repos/fsfw-dresden/LiaScript-LiveEditor/releases/latest' | jq -r '.assets[0].browser_download_url' | xargs curl -L -o liveeditor.tar.bz2
 	mkdir -p liascript-editor
 	cd liascript-editor
+	ls -l ..
 	tar -xjvf ../liveeditor.tar.bz2
 	cd ..
 	rm liveeditor.tar.bz2
