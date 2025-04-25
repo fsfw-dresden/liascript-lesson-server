@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,10 +28,6 @@ jobs:
           mv ../*.deb artifacts/
           mv ../*.buildinfo artifacts/
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
